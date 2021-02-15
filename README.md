@@ -90,4 +90,4 @@ We will take the predicted protein .faa files obtained from GeneMarkS, to run eg
 ```
 emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output assemblyID1_eggnog -m diamond
 ```
-To compile eggNOG, GhostKoala, blastx, and salmon data and to do transcript count normalization, see 
+To compile eggNOG, GhostKoala, blastx, and salmon data and to do transcript count normalization, see Falkor_MetaT_DataProcessing_Normalization.R
