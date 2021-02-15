@@ -122,7 +122,7 @@ colnames(df) <- c("contigID","Taxonomy","KO","Cluster","10-Cyclonic-112m-A","11-
 
 # "Genes" = contigID, Taxonomy, KO, and Cluster
 # "Groups" = groups of interest; here we have 8 eddy and depth combinations
-dge.metaT <- DGEList(counts=df[,5:28],genes=df[,1:4],group=c(rep("Cyclonic-DCM",3),rep("Cyclonic-25m",3),rep("Anticyclonic-250m",3),rep("Anticyclonic-150m",3),rep("Anticyclonic-DCM",3),rep("Anticyclonic-25m",3),rep("Cyclonic-250m",3),rep("Cyclonic-150m",3)))
+dge.metaT <- DGEList(counts=df[5:28],genes=df[1:4],group=c(rep("Cyclonic-DCM",3),rep("Cyclonic-25m",3),rep("Anticyclonic-250m",3),rep("Anticyclonic-150m",3),rep("Anticyclonic-DCM",3),rep("Anticyclonic-25m",3),rep("Cyclonic-250m",3),rep("Cyclonic-150m",3)))
 
 # dge.metaT$samples
 
@@ -159,7 +159,7 @@ df.tax <- cbind(df,taxtmp)
 taxa.norm <- subset(df.tax, Class=="Bacillariophyceae")
 
 # Normalize diatom-only dataframe (i.e. taxa.norm)
-dge.metaT <- DGEList(counts=taxa.norm[,5:28],genes=taxa.norm[1:4],group=c(rep("Cyclonic-DCM",3),rep("Cyclonic-25m",3),rep("Anticyclonic-250m",3),rep("Anticyclonic-150m",3),rep("Anticyclonic-DCM",3),rep("Anticyclonic-25m",3),rep("Cyclonic-250m",3),rep("Cyclonic-150m",3)))
+dge.metaT <- DGEList(counts=taxa.norm[5:28],genes=taxa.norm[1:4],group=c(rep("Cyclonic-DCM",3),rep("Cyclonic-25m",3),rep("Anticyclonic-250m",3),rep("Anticyclonic-150m",3),rep("Anticyclonic-DCM",3),rep("Anticyclonic-25m",3),rep("Cyclonic-250m",3),rep("Cyclonic-150m",3)))
 
 metaT.norm <- calcNormFactors(dge.metaT,method = "TMM")
 cpm_data <- cpm (metaT.norm, normalized.lib.sizes=TRUE, log=FALSE) 
