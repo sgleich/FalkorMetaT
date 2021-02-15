@@ -49,3 +49,12 @@ Once sequences that will be used in each coassembly have been concatenated into 
 ```
 megahit -t 16 -1 [sample-R1.fastq] -2 [sample-R2.fastq] -o [sample_mhit_out]
 ```
+## Estimate transcript abundances - salmon
+Fix quality strings
+```
+Add code
+```
+Make index using assembly output
+```
+salmon quant -i all_depths_eddies_index -l A -1 /path/to/directory/[sample-R1-unmerged.fastq] -2 /path/to/directory/[sample-R2-unmerged.fastq] -o [sample.quant]
+```
