@@ -49,6 +49,11 @@ Once sequences that will be used in each coassembly have been concatenated into 
 ```
 megahit -t 16 -1 [sample-R1.fastq] -2 [sample-R2.fastq] -o [sample_mhit_out]
 ```
+Add assembly tag to the beginning of each contig name. This will be important for downstream purposes. Then we will concatenate all of our assemblies together so we have one big list of contigs. In the example below, we will pretend we have 3 assemblies: assembly_ID1, assembly_ID2, and assembly_ID3.
+```
+sed 's/^>/>assembly_ID1_/' [final.contigs.fa] > [assembly_ID1_final.contigs2.fa]
+cat [assembly_ID1_final.contigs2.fa] [assembly_ID2_final.contigs2.fa] [assembly_ID3_final.contigs2.fa] > [all_contigs.fa]
+```
 ## Estimate transcript abundances - salmon
 Fix quality strings
 ```
