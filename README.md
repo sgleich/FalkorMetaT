@@ -55,11 +55,39 @@ sed 's/^>/>assembly_ID1_/' [final.contigs.fa] > [assembly_ID1_final.contigs2.fa]
 cat [assembly_ID1_final.contigs2.fa] [assembly_ID2_final.contigs2.fa] [assembly_ID3_final.contigs2.fa] > [all_contigs.fa]
 ```
 ## Estimate transcript abundances - salmon
-Fix quality strings
+Salmon will be used to align reads to the assembled contigs. This will allow us to estimate the abundance of a specific transcript. 
+
+If you have any sequences with truncated quality strings, these sequences must be removed before running salmon otherwise, you'll get an error. Here, sequences with truncated quality strings will be removed using a custom python script (remove_bad_quality_strings.py). 
 ```
-Add code
+python ./remove_bad_quality_strings.py
 ```
-Make index using assembly output
+Make index using concatenated assembly output (all_contigs.fa). Make sure contig names have sample info added to them (as done with the sed command above)
+```
+salmon index -t [all_contigs.fa] -i salmon_index --type quasi -k 31
+```
+Now execute salmon. You will have one salmon output file per sample. 
 ```
 salmon quant -i all_depths_eddies_index -l A -1 /path/to/directory/[sample-R1-unmerged.fastq] -2 /path/to/directory/[sample-R2-unmerged.fastq] -o [sample.quant]
 ```
+## Taxonomic classification - blastx
+We will now assign taxonomy to the contigs we obtained from each of our assemblies. 
+```
+diamond blastx -d /path/to/custom/db/EukZoo.dmnd -q [assemblyID1_final.contigs2.fa] –sensitive -e 0.01 -o [assemblyID1_blastx_out]
+```
+Now we will BLAH
+```
+MORE CODE
+```
+## Predict proteins - GeneMarkS
+Now we can predict proteins from the contigs we've obtained from each of our assemblies. 
+```
+GeneMarkS-T/gmst.pl --fnn -faa [assemblyID1_final.contigs2.fa]
+```
+GeneMarkS outputs can be used to for functional annotation via GhostKoala for KEGG annotation (https://www.kegg.jp/ghostkoala/) and/or eggNOG-mapper 
+
+## Functional annotation - eggNOG
+We will take the predicted protein .faa files obtained from GeneMarkS, to run eggNOG mapper for functional annotation. 
+```
+emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output assemblyID1_eggnog -m diamond
+```
+To compile eggNOG, GhostKoala, blastx, and salmon data and to do transcript count normalization, see 
