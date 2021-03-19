@@ -156,7 +156,7 @@ taxtmp <- colsplit(df$Taxonomy, ";", c("Supergroup","Kingdom","Phylum","Class","
 df.tax <- cbind(df,taxtmp)
 
 # Subset dataframe so that we only have the taxa of interest. Here we will subset for diatoms (Bacillariophyceae)
-taxa.norm <- subset(df.tax, Class=="Bacillariophyceae")
+taxa.norm <- subset(df.tax, Phylum=="Bacillariophyceae")
 
 # Normalize diatom-only dataframe (i.e. taxa.norm)
 dge.metaT <- DGEList(counts=taxa.norm[5:28],genes=taxa.norm[1:4],group=c(rep("Cyclonic-DCM",3),rep("Cyclonic-25m",3),rep("Anticyclonic-250m",3),rep("Anticyclonic-150m",3),rep("Anticyclonic-DCM",3),rep("Anticyclonic-25m",3),rep("Cyclonic-250m",3),rep("Cyclonic-150m",3)))
