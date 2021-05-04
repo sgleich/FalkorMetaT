@@ -8,6 +8,10 @@
 java -jar /path/to/directory/Trimmomatic-0.32/trimmomatic-0.32.jar PE [sample-laneNum-readDir.fastq] ILLUMINACLIP:/path/to/directory/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:40:15 LEADING:10 TRAILING:10 SLIDINGWINDOW:25:10 MINLEN:50
 ```
 ## Remove ERCC spike-in mix
+Make reference
+```
+/path/to/directory/trinityrnaseq-2.1.1/util/align_and_estimate_abundance.pl --transcripts /path/to/directory/ERCC92b.fa --est_method RSEM --aln_method bowtie --trinity_mode --prep_reference --output_dir out
+```
 Know the directory that your ERCC fasta sequences are in (i.e. /path/to/directory/ERCC92b.fa). Here, laneNum represents the lane number (each sample was sequenced on two lanes) and R1/R2 represents the read direction (PE sequences)  
 
 First, align ERCC reads to fastq files.
