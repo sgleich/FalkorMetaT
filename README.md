@@ -32,9 +32,14 @@ First, we will merge the PE reads.
 ```
 /path/to/directory/sortmerna-2.1b/scripts/merge-paired-reads.sh /path/to/directory/trimmed/[sample-R1-trimmed2.fastq] /path/to/directory/trimmed/[sample-R2-trimmed2.fastq] [sample-merged.fastq]
 ```
+Make index for PR2 database through sortmerna
+```
+indexdb_rna --ref pr2_version_4.12.0_18S_mothur.fasta,pr2_version_4.12.0_18S_mothur.idx
+```
+
 Then, we will separate sequences that match the rRNA database from those that do not.
 ```
-sortmerna --ref /path/to/directory/sortmerna-2.1b/rRNA_databases/silva-euk-18s-id95.fasta,/path/to/directory/sortmerna-2.1b/index/silva-euk-18s-db --reads [sample-merged.fastq] --sam --fastx --aligned [sample-rrna] --other [sample-norrna] --log -v --paired_in --best 1
+sortmerna --ref /path/to/directory/pr2_version_4.12.0_18S_mothur.fasta,/path/to/directory/pr2_version_4.12.0_18S_mothur.idx --reads [sample-merged.fastq] --sam --fastx --aligned [sample-rrna] --other [sample-other] --log -v --paired_in --best 1
 ```
 Then, we can can unmerge PE reads that didn't hit the rRNA database
 ```
