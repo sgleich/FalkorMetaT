@@ -72,7 +72,7 @@ python ./remove_bad_quality_strings.py
 ```
 Make index using concatenated assembly output (all_contigs.fa). Make sure contig names have sample info added to them (as done with the sed command above)
 ```
-salmon index -t [all_contigs.fa] -i salmon_index --type quasi -k 31
+salmon index -t [all_contigs.fa] -i salmon_index
 ```
 Now execute salmon. You will have one salmon output file per sample. 
 ```
