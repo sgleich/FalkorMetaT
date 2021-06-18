@@ -5,7 +5,7 @@
 
 ## Trim Sequences - Trimmomatic
 ```
-java -jar /path/to/directory/Trimmomatic-0.32/trimmomatic-0.32.jar PE [sample-laneNum-readDir.fastq] ILLUMINACLIP:/path/to/directory/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:40:15 LEADING:10 TRAILING:10 SLIDINGWINDOW:25:10 MINLEN:50
+java -jar /path/to/directory/Trimmomatic-0.38/trimmomatic-0.38.jar PE [sample-laneNum-readDir.fastq] ILLUMINACLIP:/path/to/directory/Trimmomatic-0.38/adapters/TruSeq3-PE-2.fa:2:40:15 LEADING:10 TRAILING:10 SLIDINGWINDOW:25:10 MINLEN:50
 ```
 ## Remove ERCC spike-in mix
 Make reference
