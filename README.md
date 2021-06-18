@@ -10,13 +10,13 @@ java -jar /path/to/directory/Trimmomatic-0.38/trimmomatic-0.38.jar PE [sample-la
 ## Remove ERCC spike-in mix
 Make reference
 ```
-/path/to/directory/trinityrnaseq-2.1.1/util/align_and_estimate_abundance.pl --transcripts /path/to/directory/ERCC92b.fa --est_method RSEM --aln_method bowtie --trinity_mode --prep_reference --output_dir out
+/path/to/directory/trinityrnaseq-2.8.4/util/align_and_estimate_abundance.pl --transcripts /path/to/directory/ERCC92b.fa --est_method RSEM --aln_method bowtie --trinity_mode --prep_reference --output_dir out
 ```
 Know the directory that your ERCC fasta sequences are in (i.e. /path/to/directory/ERCC92b.fa). Here, laneNum represents the lane number (each sample was sequenced on two lanes) and R1/R2 represents the read direction (PE sequences)  
 
 First, align ERCC reads to fastq files.
 ```
-/path/to/directory/trinity-2.1.1/util/align_and_estimate_abundance.pl --seqType fq --left [sample-laneNum-R1-trimmed.fastq] --right [sample-laneNum-R2-trimmed.fastq] --transcripts /path/to/directory/ERCC92b.fa --est_method RSEM --aln_method bowtie --trinity_mode --output_dir sample-laneNum
+/path/to/directory/trinityrnaseq-Trinity-v2.8.4/util/align_and_estimate_abundance.pl --seqType fq --left [sample-laneNum-R1-trimmed.fastq] --right [sample-laneNum-R2-trimmed.fastq] --transcripts /path/to/directory/ERCC92b.fa --est_method RSEM --aln_method bowtie --trinity_mode --output_dir sample-laneNum
 ```
 Using the custom perl script written by Sarah Hu, remove ERCC reads.
 ```
