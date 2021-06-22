@@ -91,7 +91,7 @@ We will now assign taxonomy to the contigs we obtained from each of our assembli
 EUKulele --sample_dir /path/to/directory -m mets --n_ext fnn
 ```
 ## Functional annotation - eggNOG
-We will take the predicted protein .faa files obtained from GeneMarkS, to run eggNOG mapper for functional annotation. 
+We will take the predicted protein .faa files obtained from GeneMarkS to run eggNOG mapper for functional annotation. 
 ```
 emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output assemblyID1_eggnog -m diamond
 ```
