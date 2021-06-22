@@ -78,15 +78,6 @@ Now execute salmon. You will have one salmon output file per sample.
 ```
 salmon quant -i all_depths_eddies_index -l A -1 /path/to/directory/[sample-R1-unmerged.fastq] -2 /path/to/directory/[sample-R2-unmerged.fastq] -o [sample.quant]
 ```
-## Taxonomic classification - blastx
-We will now assign taxonomy to the contigs we obtained from each of our assemblies. 
-```
-diamond blastx -d /path/to/custom/db/EukZoo.dmnd -q [assemblyID1_final.contigs2.fa] –sensitive -e 0.01 -o [assemblyID1_blastx_out]
-```
-Now we will BLAH
-```
-MORE CODE
-```
 ## Predict proteins - GeneMarkS
 Now we can predict proteins from the contigs we've obtained from each of our assemblies. 
 ```
@@ -94,6 +85,11 @@ GeneMarkS-T/gmst.pl --fnn -faa [assemblyID1_final.contigs2.fa]
 ```
 GeneMarkS outputs can be used to for functional annotation via GhostKoala for KEGG annotation (https://www.kegg.jp/ghostkoala/) and/or eggNOG-mapper 
 
+## Taxonomic classification - EUKulele
+We will now assign taxonomy to the contigs we obtained from each of our assemblies. In the example below, the directory "directory" has the .fnn file obtained from GeneMarkS.
+```
+EUKulele --sample_dir /path/to/directory -m mets --n_ext fnn
+```
 ## Functional annotation - eggNOG
 We will take the predicted protein .faa files obtained from GeneMarkS, to run eggNOG mapper for functional annotation. 
 ```
