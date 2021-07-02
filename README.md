@@ -95,4 +95,18 @@ We will take the predicted protein .faa files obtained from GeneMarkS to run egg
 ```
 emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output assemblyID1_eggnog -m diamond
 ```
-To compile eggNOG, GhostKoala, blastx, and salmon data and to do transcript count normalization, see Falkor_MetaT_DataProcessing_Normalization.R
+To compile eggNOG, EUKulele, and salmon output data into long and wide format dataframes, see CompileMetaTData.R
+## Cluster contigs - mmseqs2
+We will cluster the contigs in the all_contigs.fa file. First we will create a database using mmseqs2.
+```
+mmseqs createdb allcontigs.fa metaT_db
+```
+Then, we will cluster the contigs at 80% sequence similarity. 
+```
+mmseqs linclust metaT_db cluster_out tmp --min-seq-id 0.8 -c 0.8 --cov-mode 1
+```
+Finally, we will convert the cluster output to a tsv file. 
+```
+mmseqs createtsv metaT_db cluster_out metaT_clusters.tsv
+```
+After generating the cluster tsv file, the cluster numbers can be added to the wide data frame (generated using CompileMetaTData.R) using the merge_clust.py script. Then, the wide data frame with the clusters included can be used for data normalization (see NormalizeMetaTData.R)
