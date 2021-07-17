@@ -103,7 +103,7 @@ mmseqs createdb allcontigs.fa metaT_db
 ```
 Then, we will cluster the contigs at 80% sequence similarity. 
 ```
-mmseqs linclust metaT_db cluster_out tmp --min-seq-id 0.8 -c 0.8 --cov-mode 1
+mmseqs linclust metaT_db cluster_out tmp --min-seq-id 0.8 -c 0.95 --cov-mode 1
 ```
 Finally, we will convert the cluster output to a tsv file. 
 ```
