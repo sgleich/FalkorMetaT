@@ -64,11 +64,6 @@ sed 's/^>/>assembly_ID1_/' [final.contigs.fa] > [assembly_ID1_final.contigs2.fa]
 cat [assembly_ID1_final.contigs2.fa] [assembly_ID2_final.contigs2.fa] [assembly_ID3_final.contigs2.fa] > [all_contigs.fa]
 ```
 ## Estimate transcript abundances - salmon
-Salmon will be used to align reads to the assembled contigs. This will allow us to estimate the abundance of a specific transcript. 
-
-If you have any sequences with truncated quality strings, these sequences must be removed before running salmon otherwise, you'll get an error. Here, sequences with truncated quality strings will be removed using a custom python script (remove_bad_quality_strings.py). 
-```
-python ./remove_bad_quality_strings.py
 ```
 Make index using concatenated assembly output (all_contigs.fa). Make sure contig names have sample info added to them (as done with the sed command above)
 ```
