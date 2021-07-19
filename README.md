@@ -64,7 +64,6 @@ sed 's/^>/>assembly_ID1_/' [final.contigs.fa] > [assembly_ID1_final.contigs2.fa]
 cat [assembly_ID1_final.contigs2.fa] [assembly_ID2_final.contigs2.fa] [assembly_ID3_final.contigs2.fa] > [all_contigs.fa]
 ```
 ## Estimate transcript abundances - salmon
-```
 Make index using concatenated assembly output (all_contigs.fa). Make sure contig names have sample info added to them (as done with the sed command above)
 ```
 salmon index -t [all_contigs.fa] -i salmon_index
