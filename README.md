@@ -1,14 +1,15 @@
 **Eukaryotic MetaT Bioinformatic Pipeline**  
 **By: Samantha Gleich**  
 **Most of the code here is taken or modified from Sarah K. Hu (https://github.com/shu251/SPOT_metatranscriptome)**  
-**Last modified: 2/15/21**
+**Last modified: 11/9/22**
 
 ## Trim Sequences - Trimmomatic
+Trim sequences using trimmomatic version 0.38
 ```
 java -jar /path/to/directory/Trimmomatic-0.38/trimmomatic-0.38.jar PE [sample-laneNum-readDir.fastq] ILLUMINACLIP:/path/to/directory/Trimmomatic-0.38/adapters/TruSeq3-PE-2.fa:2:40:15 LEADING:10 TRAILING:10 SLIDINGWINDOW:25:10 MINLEN:50
 ```
 ## Remove ERCC spike-in mix
-Make reference
+Make trinity reference for removing ERCC reads
 ```
 /path/to/directory/trinityrnaseq-2.8.4/util/align_and_estimate_abundance.pl --transcripts /path/to/directory/ERCC92b.fa --est_method RSEM --aln_method bowtie --trinity_mode --prep_reference --output_dir out
 ```
@@ -27,12 +28,12 @@ If reads were sequenced on more than one lane, concatenate sequences from same s
 ```
 cat [sample-L2-R1-trimmed2.fastq] [sample-L3-R1-trimmed2.fastq] > [sample-R1-trimmed2.fastq]
 ```
-## Separate rRNA from mRNA - SortMeRNA
+## Separate rRNA from mRNA - SortMeRNA (version 2.0)
 First, we will merge the PE reads.
 ```
 /path/to/directory/sortmerna-2.1b/scripts/merge-paired-reads.sh /path/to/directory/trimmed/[sample-R1-trimmed2.fastq] /path/to/directory/trimmed/[sample-R2-trimmed2.fastq] [sample-merged.fastq]
 ```
-Make index for PR2 database through sortmerna
+Make index for PR2 database through sortmerna (PR2 version 12)
 ```
 indexdb_rna --ref pr2_version_4.12.0_18S_mothur.fasta,pr2_version_4.12.0_18S_mothur.idx
 ```
@@ -49,7 +50,7 @@ Lastly, we can umerge PE reads that did hit the rRNA database. These can be used
 ```
 /path/to/directory/sortmerna-2.1b/scripts/unmerge-paired-reads.sh [sample-rrna.fastq] [sample-R1-unmerged-rrna.fastq] [sample-R2-unmerged-rrna.fastq]
 ```
-## Assemble reads - MEGAHIT
+## Assemble reads - MEGAHIT (version 1.2.8)
 Concatenate all sequences that will be used in one assembly together. Here, I will concatenate all replicates from the same eddy/depth. Leave R1 and R2 reads separate from one another.
 ```
 cat [sample1-R1-unmerged.fastq] [sample2-R1-unmerged.fastq] [sample3-R1-unmerged.fastq] > [sample-R1.fastq]
@@ -63,7 +64,7 @@ Add assembly tag to the beginning of each contig name. This will be important fo
 sed 's/^>/>assembly_ID1_/' [final.contigs.fa] > [assembly_ID1_final.contigs2.fa]
 cat [assembly_ID1_final.contigs2.fa] [assembly_ID2_final.contigs2.fa] [assembly_ID3_final.contigs2.fa] > [all_contigs.fa]
 ```
-## Estimate transcript abundances - salmon
+## Estimate transcript abundances - salmon (version 1.5.1)
 Make index using concatenated assembly output (all_contigs.fa). Make sure contig names have sample info added to them (as done with the sed command above)
 ```
 salmon index -t [all_contigs.fa] -i salmon_index
@@ -79,28 +80,21 @@ GeneMarkS-T/gmst.pl --fnn -faa [assemblyID1_final.contigs2.fa]
 ```
 GeneMarkS outputs can be used to for functional annotation via GhostKoala for KEGG annotation (https://www.kegg.jp/ghostkoala/) and/or eggNOG-mapper 
 
-## Taxonomic classification - EUKulele
+## Taxonomic classification - EUKulele (version 1.4.0)
 We will now assign taxonomy to the contigs we obtained from each of our assemblies. In the example below, the directory "directory" has the .fnn file obtained from GeneMarkS.
 ```
 EUKulele --sample_dir /path/to/directory -m mets --n_ext fnn
 ```
-## Functional annotation - eggNOG
+## Functional annotation - eggNOG (version 5.0)
 We will take the predicted protein .faa files obtained from GeneMarkS to run eggNOG mapper for functional annotation. 
 ```
 emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output assemblyID1_eggnog -m diamond
 ```
 To compile eggNOG, EUKulele, and salmon output data into long and wide format dataframes, see CompileMetaTData.R
+
 ## Cluster contigs - mmseqs2
 We will cluster the contigs in the all_contigs.fa file. First we will create a database using mmseqs2.
 ```
-mmseqs createdb allcontigs.fa metaT_db
-```
-Then, we will cluster the contigs at 80% sequence similarity. 
-```
-mmseqs linclust metaT_db cluster_out tmp --min-seq-id 0.8 -c 0.95 --cov-mode 1
-```
-Finally, we will convert the cluster output to a tsv file. 
-```
-mmseqs createtsv metaT_db cluster_out metaT_clusters.tsv
+mmseqs easy-cluster all_contigs.fa clusterRes tmp --min-seq-id 0.8 -c 0.95 --cov-mode 1 
 ```
 After generating the cluster tsv file, the cluster numbers can be added to the wide data frame (generated using CompileMetaTData.R) using the merge_clust.py script. Then, the wide data frame with the clusters included can be used for data normalization (see NormalizeMetaTData.R)
