@@ -1,4 +1,4 @@
-### This script will allow you to combine the salmon (count data), EUKulele (taxonomy data), and eggNOG (function/gene data) metaT outputs into one wide dataframe. ###
+### This script will allow you to combine the salmon (count data), EUKulele (taxonomy data), and eggNOG (function/gene data) wide dataframe with your ortholog clusters. ###
 ### By: Samantha Gleich ###
 ### Last Updated: November 9, 2022 ###
 
