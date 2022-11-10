@@ -33,4 +33,4 @@ wide.data$OG <- NULL
 wide.data$KO <- NULL
 
 # Save wide format data
-write.csv(wide.data,"wide_format_data_KO2.csv")
+write.csv(wide.data,"wide_format_data.csv")
