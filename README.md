@@ -50,6 +50,16 @@ Lastly, we can umerge PE reads that did hit the rRNA database. These can be used
 ```
 /path/to/directory/sortmerna-2.1b/scripts/unmerge-paired-reads.sh [sample-rrna.fastq] [sample-R1-unmerged-rrna.fastq] [sample-R2-unmerged-rrna.fastq]
 ```
+## miTag analysis
+First we will split the libraries (.fna file; use qiime1 for this analysis)
+```
+split_libraries_fastq.py -i /path/to/directory/[sample-R1-unmerged-rrna.fastq] --barcode_type 'not-barcoded' --sample_ids sample-R1-rrna -q 15 -n 5 -o sample-rrna
+```
+Now we will assign taxonomy to our rRNA sequences using qiime1
+```
+assign_taxonomy.py -i seqs.fna -o sample-rrna-tax -r /path/to/directory/pr2_version_4.12.0_18S_mothur.fastq -t /path/to/directory/pr2_version_4.12.0_18S_mothur.idx --similarity 0.97
+```
+
 ## Assemble reads - MEGAHIT (version 1.2.8)
 Concatenate all sequences that will be used in one assembly together. Here, I will concatenate all replicates from the same eddy/depth. Leave R1 and R2 reads separate from one another.
 ```
