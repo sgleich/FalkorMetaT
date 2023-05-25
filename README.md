@@ -105,6 +105,6 @@ To compile eggNOG, EUKulele, and salmon output data into long and wide format da
 ## Cluster contigs - mmseqs2
 We will cluster the contigs in the all_contigs.fa file. First we will create a database using mmseqs2.
 ```
-mmseqs easy-cluster all_contigs.fa clusterRes tmp --min-seq-id 0.8 -c 0.95 --cov-mode 1 
+mmseqs easy-cluster all_seqs.fnn clusterRes tmp --min-seq-id 0.8 -c 0.95 --cov-mode 1 
 ```
 After generating the cluster tsv file, the cluster numbers can be added to the wide data frame (generated using CompileMetaTData.R) using the merge_clust.py script. Then, the wide data frame with the clusters included can be used for data normalization (see NormalizeMetaTData.R)
