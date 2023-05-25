@@ -102,8 +102,8 @@ emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output
 ```
 To compile eggNOG, EUKulele, and salmon output data into long and wide format dataframes, see CompileMetaTData.R
 
-## Cluster contigs - mmseqs2
-We will cluster the contigs in the all_contigs.fa file. First we will create a database using mmseqs2.
+## Cluster proteins - mmseqs2
+We will cluster the predicted proteins. First we will create a database using mmseqs2.
 ```
 mmseqs easy-cluster all_seqs.fnn clusterRes tmp --min-seq-id 0.8 -c 0.95 --cov-mode 1 
 ```
