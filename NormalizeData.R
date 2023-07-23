@@ -1,6 +1,6 @@
-### This script will allow you to normalize transcript abundance data across samples. ###
+### This script will allow you to normalize transcript abundance data across samples using the edgeR TMM CPM method. ###
 ### By: Samantha Gleich ###
-### Last Updated: November 9, 2022 ###
+### Last Updated: July 23, 2023 ###
 
 # Load libraries
 library(edgeR)
