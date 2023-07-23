@@ -100,11 +100,9 @@ We will take the predicted protein .faa files obtained from GeneMarkS to run egg
 ```
 emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output assemblyID1_eggnog -m diamond
 ```
-To compile eggNOG, EUKulele, and salmon output data into long and wide format dataframes, see CompileMetaTData.R
-
 ## Cluster proteins - mmseqs2
 We will cluster the predicted proteins. First we will create a database using mmseqs2.
 ```
 mmseqs easy-cluster all_seqs.fnn clusterRes tmp --min-seq-id 0.8 -c 0.95 --cov-mode 1 
 ```
-After generating the cluster tsv file, the cluster numbers can be added to the wide data frame (generated using CompileMetaTData.R) using the merge_clust.py script. Then, the wide data frame with the clusters included can be used for data normalization (see NormalizeMetaTData.R)
+To compile eggNOG, EUKulele, salmon, and mmseqs2 output data into long and wide format dataframes, see Compile_Data.R. The compiled dataframe can be used to normalize the dataframe using Normalize_Data.R.
