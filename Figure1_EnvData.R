@@ -24,7 +24,7 @@ den <- read.csv("Density.csv",header=TRUE)
 density <- ggplot(den, aes(x=Pressure, y=Sigma, group=Eddy, color=Eddy)) +scale_x_reverse(position = "bottom")+theme_classic()+labs(y = expression("Potential Density (kg m"^{-3}*")"), x="Depth (m)")+scale_color_manual(breaks=c("Cyclonic","Anticyclonic"),labels=c("Cyclonic","Anticyclonic"), values=c("blue","red"))+geom_line()+coord_flip()+scale_y_continuous(position = "right")
 
 # Nitrate
-no3 <- read.csv("./Figure1/InorganicNutrients_Final.csv",header=TRUE)
+no3 <- read.csv("InorganicNutrients_Final.csv",header=TRUE)
 no3$Site.. <- NULL
 no3$Density <- NULL
 no3m <- melt(no3,id.vars=c("EddyRep","Depth"))
@@ -36,6 +36,6 @@ toc <- subset(toc,Parameter=="TOC")
 carb <- ggplot(toc, aes(x=as.numeric(Depth), y=Measurement, group=as.factor(Site..), color=as.factor(Site..)))+scale_x_reverse(position = "bottom",limits=c(250,0))+theme_classic()+geom_line()+coord_flip()+scale_y_continuous(position = "right",limits=c(50,75))+geom_point()+labs(x="Depth (m)",y=expression("TOC ("*mu*"M)"))+scale_color_manual(name="Eddy",breaks=c(59,74),labels=c("Cyclonic","Anticyclonic"), values=c("blue","red"))
 carb
 
-# Combine all plots together
+# Combine all plots together, add a common legend, and add panel labels (b-g)
 density+chl+temp+oxy+n+carb+plot_layout(guides = "collect")+plot_annotation(tag_levels=list(c("b","c","d","e","f","g")))
 # ggsave("Figure1b_1g.pdf",width=13,height=8)
