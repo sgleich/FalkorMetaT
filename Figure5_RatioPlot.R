@@ -2,46 +2,61 @@
 ### This script will allow you to calculate and plot phototrophy:heterotrophy ratios from a list of phototrophy-associated and heterotrophy-associated KO terms that are pre-defined ###
 ### Last Updated: July 24, 2023 ###
 
-all <- read.csv("./Figure5/KOSums_AllEuk_May2023.csv",header=TRUE,row.names=1)
+# Load libraries
+library(tidyverse)
+library(ggplot2)
+library(reshape2)
+library(patchwork)
 
-chloro <- read.csv("./Figure5/norm_chlorophyte_MAY2023.csv",header=TRUE,row.names=1)
+# Load in dataframe with all eukaryotes
+all <- read.csv("KOSums_AllEuk_May2023.csv",header=TRUE,row.names=1)
+
+# Load in dataframe containing normalized chlorophyte transcript abundances
+chloro <- read.csv("norm_chlorophyte_MAY2023.csv",header=TRUE,row.names=1)
 chloro$contigID <- NULL
 chloro$Taxonomy <- NULL
 chloro$Cluster <- NULL
 
-cil <- read.csv("./Figure5/norm_ciliate_MAY2023.csv",header=TRUE,row.names=1)
+# Load in dataframe containing normalized ciliate transcript abundances
+cil <- read.csv("norm_ciliate_MAY2023.csv",header=TRUE,row.names=1)
 cil$contigID <- NULL
 cil$Taxonomy <- NULL
 cil$Cluster <- NULL
 
-dia <- read.csv("./Figure5/norm_diatom_MAY2023.csv",header=TRUE,row.names=1)
+# Load in dataframe containing normalized diatom transcript abundances
+dia <- read.csv("norm_diatom_MAY2023.csv",header=TRUE,row.names=1)
 dia$contigID <- NULL
 dia$Taxonomy <- NULL
 dia$Cluster <- NULL
 
+# Load in dataframe containing normalized dinoflagellate transcript abundances
 dino <- read.csv("./Figure5/norm_dino_MAY2023.csv",header=TRUE,row.names=1)
 dino$contigID <- NULL
 dino$Taxonomy <- NULL
 dino$Cluster <- NULL
 
+# Load in dataframe containing normalized hatpophyte transcript abundances
 hapto <- read.csv("./Figure5/norm_hapto_MAY2023.csv",header=TRUE,row.names=1)
 hapto$contigID <- NULL
 hapto$Taxonomy <- NULL
 hapto$Cluster <- NULL
 
+# Load in dataframe containing normalized rhizarian transcript abundances
 rhiz <- read.csv("./Figure5/norm_rhiz_MAY2023.csv",header=TRUE,row.names=1)
 rhiz$contigID <- NULL
 rhiz$Taxonomy <- NULL
 rhiz$Cluster <- NULL
 
-
+# Ratio plot function
+# Input: dataframe and plot title
+# Output: Plot showing phototrophy:heterotrophy transcript ratios +/- SE across depths and eddy types
 makeRatioPlot <- function(df,title){
   df <- subset(df,!is.na(KO))
   df <- subset(df,KO !="")
   
   # Gene groups
   `%ni%` <- Negate(`%in%`)
-  ko <- read.csv("./Figure4/KEGG.csv",header=TRUE)
+  ko <- read.csv("KEGG.csv",header=TRUE)
   
   photo <- c("Photosynthesis","Calvin cycle","Antenna proteins")
   
@@ -52,8 +67,6 @@ makeRatioPlot <- function(df,title){
   
   dfPhoto <- subset(df,KO %in% koPhoto$KEGG.KO)
   dfHetero <- subset(df,KO %in% koHetero$KEGG.KO)
-  
-  
   
   dfPhotoMelt <- melt(dfPhoto,id.vars="KO")
   dfHeteroMelt <- melt(dfHetero,id.vars="KO")
@@ -85,27 +98,16 @@ makeRatioPlot <- function(df,title){
   p <- ggplot(dfFin, aes(x=Depth,y=meanz,fill=Eddy,group=Eddy))+geom_bar(stat='identity', position='dodge',color="black")+scale_y_continuous(breaks = scales::pretty_breaks(n = 3),position='right')+geom_errorbar(aes(ymin=meanz-sdz, ymax=meanz+sdz), width=0.4,position=position_dodge(.9))+coord_flip()+theme_classic(base_size = 14)+xlab("Depth (m)")+ggtitle(paste(title))+scale_fill_manual(values=c("red","blue"))+ylab("Phototrophy:Heterotrophy Transcript Ratio +/- SE")
   return(p)}
 
+# Run makeRatioPlot function for all different taxa
 allEuk <- makeRatioPlot(all,"All eukaryotes")
-allEuk
-
 chlorophyte <- makeRatioPlot(chloro,"Chlorophyte")
-chlorophyte
-
 ciliate <- makeRatioPlot(cil,"Ciliate")
-ciliate
-
 diatom <- makeRatioPlot(dia,"Diatom")
-diatom
-
 dinoflag <- makeRatioPlot(dino,"Dinoflagellate")
-dinoflag
-
 haptophy <- makeRatioPlot(hapto,"Haptophyte")
-haptophy
-
 rhizaria <- makeRatioPlot(rhiz,"Rhizaria")
-rhizaria
 
+# Combine plots together as panels, create a common legend, and add panel labels (a-g)
 allEuk+ (chlorophyte+ dinoflag+rhizaria)/(haptophy+ciliate+diatom)+plot_layout(guides = "collect",widths=c(2,4))+plot_annotation(tag_levels="a")
-# ggsave("../Figure5.pdf",width=26,height=11)
+# ggsave("Figure5.pdf",width=26,height=11)
 
