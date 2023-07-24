@@ -23,7 +23,6 @@ df <- left_join(df,ko)
 # Depth plot function
 # Input: Dataframe containing transcript abundances and KO term list info, target gene group (column in KO list dataframe), and title of plot
 # Output: Plot of mean z-score transformed gene group abundance +/- SE across all eddy type/depth combinations
-
 depthPlot <- function(df,target,title){
   df <- subset(df,Biomarker.Gene.Group==paste(target))
   df$KEGG.KO <- NULL
