@@ -5,7 +5,7 @@
 # Load libraries
 library(edgeR)
 
-# Load in wide format data (compiled but not yet normalized; obtained from running Compile_Data.R)
+# Load in wide format data (compiled but not yet normalized; obtained via Compile_Data.R)
 df <- read.csv("wide_format_data.csv",header=TRUE,row.names=1)
 df$Cluster <- as.character(df$Cluster)
 
