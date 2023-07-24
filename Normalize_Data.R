@@ -5,8 +5,8 @@
 # Load libraries
 library(edgeR)
 
-# Load in data
-df <- read.csv("clustered_output_FINAL.csv",header=TRUE,row.names=1)
+# Load in wide format data (compiled but not yet normalized; obtained from running Compile_Data.R)
+df <- read.csv("wide_format_data.csv",header=TRUE,row.names=1)
 df$Cluster <- as.character(df$Cluster)
 
 # Set up edgeR list. Counts are salmon sample counts, genes are identifiers (i.e. contigID, KO, Cluster, and Taxonomy), groups are you telling edgeR which groups exist in your dataset (i.e. sample types)
