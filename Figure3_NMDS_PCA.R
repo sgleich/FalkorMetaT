@@ -1,4 +1,4 @@
-### Figure 3 - NMDS/PCoA ###
+### Figure 3 - NMDS/PCA ###
 ### This script will allow you to make an NMDS plot using rRNA reads pull out of metatranscriptomes and a PCA plot using transcripts from metatranscriptomes. ###
 ### Last Updated: July 23, 2023 ###
 
