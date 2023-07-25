@@ -9,29 +9,58 @@ library(tidyverse)
 library(reshape2)
 library(patchwork)
 
-# NMDS Plot
-mitag <- read.csv("miTag_final_april2023.csv",header=TRUE,row.names=1)
-mitag <- subset(mitag,Tax!="Unassigned")
+### NMDS PLOT ###
+# Compile miTag results (taxonomy associated with rRNA reads from sortmerna)
+samples <- c("10-cyclonic-112","11-cyclonic-112","12-cyclonic-112","13-cyclonic-25","14-cyclonic-25","15-cyclonic-25","19-anticyclonic-250","20-anticyclonic-250","21-anticyclonic-250","22-anticyclonic-150","23-anticyclonic-150","24-anticyclonic-150","25-anticyclonic-122","26-anticyclonic-122","27-anticyclonic-122","28-anticyclonic-25","29-anticyclonic-25","30-anticyclonic-25","4-cyclonic-250","5-cyclonic-250","6-cyclonic-250","7-cyclonic-150","8-cyclonic-150","9-cyclonic-150")
 
+# Loop to read in all samples
+all <- NULL
+for (sample in samples){
+  df <- read.delim(paste(sample,"tax_assignments.txt",sep="_"),header=FALSE,row.names=NULL)
+  colnames(df)<- c("seqID","Tax","X1","X2")
+  df$Sample <- sample
+  df$Count <- 1
+  all <- rbind(all,df)}
+
+# Remove columns we don't need
+all$seqID <- NULL
+all$Num1 <- NULL
+all$Num2 <- NULL
+
+# Find total number of reads associated with each taxonomic ID and each sample
+allSum <- all %>% group_by(Tax,Sample) %>% summarize(sum(Count)) %>% as.data.frame()
+
+# Remove unassigned miTags - we will only consider seqs that were annotated at or below "Eukaryote"
+mitag <- subset(allSum,Tax!="Unassigned")
+
+# Turn long dataframe into wide dataframe
 mitag <- mitag %>% pivot_wider(id_cols=Sample,names_from = Tax,values_from = sum.Count.,values_fill = 0) %>% as.data.frame()
 rownames(mitag) <- mitag$Sample
 mitag$Sample <- NULL
 
+# Carry out NMDS
 mitagNorm <- decostand(mitag,method="total")
-rowSums(mitagNorm)
+rowSums(mitagNorm) # Row sums should equal 1
+
 mitagBray <- vegdist(mitagNorm,method="bray") # Bray-curtis dissimiliarity 
-nmdsDf <- metaMDS(mitagBray,k=2)
-nmdsDf$stress # Record stress - 0.059
+nmdsDf <- metaMDS(mitagBray,k=2, distance="bray") # NMDS in 2 dimensions
+nmdsDf$stress # Record stress: 0.059
+
+# Extract results of NMDS
 nmdsDf <- nmdsDf$points
-colz <- colsplit(rownames(nmdsDf),"-",c("num","eddy","depth"))
+cols <- colsplit(rownames(nmdsDf),"-",c("num","eddy","depth"))
 nmdsDf <- as.data.frame(nmdsDf)
-nmdsDf$eddy <- colz$eddy
-nmdsDf$depth <- as.factor(colz$depth)
+nmdsDf$eddy <- cols$eddy
+nmdsDf$depth <- as.factor(cols$depth)
 
+# Plot NMDS
 nmdsPlot <- ggplot(nmdsDf,aes(MDS1,MDS2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,21),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("NMDS1")+ylab("NMDS2")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Community composition (18S rRNA)")+scale_fill_manual(values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
-nmdsPlot
 
-# PCA Plot
+### PCA PLOT ###
+
+
+
+
 pcaDf <- read.csv("KOSums_AllEuk_May2023.csv",header=TRUE,row.names=1)
 rownames(pcaDf) <- pcaDf$KO
 pcaDf$KO <- NULL
