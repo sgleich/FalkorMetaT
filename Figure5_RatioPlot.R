@@ -8,44 +8,20 @@ library(ggplot2)
 library(reshape2)
 library(patchwork)
 
-# Load in dataframe with all eukaryotes
-all <- read.csv("KOSums_AllEuk_May2023.csv",header=TRUE,row.names=1)
+# Load in normalized dataframe (obtained via Normalize_Data.R)
+# Here we will load in the normalized dataframe that contains all contigs annotated as "Eukaryota". To run this script for other groups, you will want to normalize the dataframe for specific taxa (e.g., dinoflagellates, diatoms, etc.).
+all <- read.csv("normalized_metaT_data.csv",header=TRUE,row.names=1)
 
-# Load in dataframe containing normalized chlorophyte transcript abundances
-chloro <- read.csv("norm_chlorophyte_MAY2023.csv",header=TRUE,row.names=1)
-chloro$contigID <- NULL
-chloro$Taxonomy <- NULL
-chloro$Cluster <- NULL
+# Remove columns we don't need
+all$contigID <- NULL
+all$Taxonomy <- NULL
+all$Cluster <- NULL 
 
-# Load in dataframe containing normalized ciliate transcript abundances
-cil <- read.csv("norm_ciliate_MAY2023.csv",header=TRUE,row.names=1)
-cil$contigID <- NULL
-cil$Taxonomy <- NULL
-cil$Cluster <- NULL
+# Remove rows without KO term
+all <- subset(all,KO!="")
 
-# Load in dataframe containing normalized diatom transcript abundances
-dia <- read.csv("norm_diatom_MAY2023.csv",header=TRUE,row.names=1)
-dia$contigID <- NULL
-dia$Taxonomy <- NULL
-dia$Cluster <- NULL
-
-# Load in dataframe containing normalized dinoflagellate transcript abundances
-dino <- read.csv("./Figure5/norm_dino_MAY2023.csv",header=TRUE,row.names=1)
-dino$contigID <- NULL
-dino$Taxonomy <- NULL
-dino$Cluster <- NULL
-
-# Load in dataframe containing normalized hatpophyte transcript abundances
-hapto <- read.csv("./Figure5/norm_hapto_MAY2023.csv",header=TRUE,row.names=1)
-hapto$contigID <- NULL
-hapto$Taxonomy <- NULL
-hapto$Cluster <- NULL
-
-# Load in dataframe containing normalized rhizarian transcript abundances
-rhiz <- read.csv("./Figure5/norm_rhiz_MAY2023.csv",header=TRUE,row.names=1)
-rhiz$contigID <- NULL
-rhiz$Taxonomy <- NULL
-rhiz$Cluster <- NULL
+# Sum counts per KO terms for each sample
+dfSum <- all %>% group_by(KO) %>% summarize_all(sum) %>% as.data.frame()
 
 # Ratio plot function
 # Input: dataframe and plot title
@@ -99,13 +75,13 @@ makeRatioPlot <- function(df,title){
   return(p)}
 
 # Run makeRatioPlot function for all different taxa
-allEuk <- makeRatioPlot(all,"All eukaryotes")
-chlorophyte <- makeRatioPlot(chloro,"Chlorophyte")
-ciliate <- makeRatioPlot(cil,"Ciliate")
-diatom <- makeRatioPlot(dia,"Diatom")
-dinoflag <- makeRatioPlot(dino,"Dinoflagellate")
-haptophy <- makeRatioPlot(hapto,"Haptophyte")
-rhizaria <- makeRatioPlot(rhiz,"Rhizaria")
+allEuk <- makeRatioPlot(dfSum,"All eukaryotes")
+# chlorophyte <- makeRatioPlot(chloro,"Chlorophyte")
+# ciliate <- makeRatioPlot(cil,"Ciliate")
+# diatom <- makeRatioPlot(dia,"Diatom")
+# dinoflag <- makeRatioPlot(dino,"Dinoflagellate")
+# haptophy <- makeRatioPlot(hapto,"Haptophyte")
+# rhizaria <- makeRatioPlot(rhiz,"Rhizaria")
 
 # Combine plots together as panels, create a common legend, and add panel labels (a-g)
 allEuk+ (chlorophyte+ dinoflag+rhizaria)/(haptophy+ciliate+diatom)+plot_layout(guides = "collect",widths=c(2,4))+plot_annotation(tag_levels="a")
