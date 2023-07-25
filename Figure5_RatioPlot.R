@@ -1,6 +1,6 @@
 ### Figure 5 - Phototrophy:Heterotrophy ratio plots ###
 ### This script will allow you to calculate and plot phototrophy:heterotrophy ratios from a list of phototrophy-associated and heterotrophy-associated KO terms that are pre-defined ###
-### Last Updated: July 24, 2023 ###
+### Last Updated: July 25, 2023 ###
 
 # Load libraries
 library(tidyverse)
