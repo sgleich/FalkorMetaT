@@ -57,7 +57,7 @@ dfAvg$Eddy <- NULL
 dfAvg$Depth <- NULL
 
 # Identify groups and group labels (eddy type, depth)
-groups <- c("Cyclonic_250m", "Anticyclonic_250m", "Cyclonic_150m", "Anticyclonic_150m","Cyclonic_112m","Anticyclonic_112m","Cyclonic_25m","Anticyclonic_25m")
+groups <- c("Cyclonic_250m", "Anticyclonic_250m", "Cyclonic_150m", "Anticyclonic_150m","Cyclonic_112m","Anticyclonic_122m","Cyclonic_25m","Anticyclonic_25m")
 group_labels<-c("Cyclonic 250 m", "Anticyclonic 250 m", "Cyclonic 150 m", "Anticyclonic 150 m", "Cyclonic DCM (112 m)","Anticyclonic DCM (122 m)", "Cyclonic 25 m", "Anticyclonic 25 m")
 dfAvg$Sample<-factor(dfAvg$Sample, levels=groups, labels = group_labels)
 
