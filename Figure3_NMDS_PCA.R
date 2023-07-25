@@ -89,19 +89,24 @@ dfAvg$Sample <- paste(dfAvg$Eddy,dfAvg$Depth,sep="_")
 dfAvg$Eddy <- NULL
 dfAvg$Depth <- NULL
 
+# Run PCA
 rownames(dfAvg) <- dfAvg$KO
 dfAvg$KO <- NULL
 dfAvg <- as.data.frame(t(dfAvg))
 pcaOut <- prcomp(dfAvg,scale=TRUE)
+
+# Extract results of PCA
 pcaPlot <- data.frame(pcaOut$x)
 colz <- colsplit(rownames(pcaPlot),"_",c("eddy","depth"))
 pcaPlot$eddy <- colz$eddy
 pcaPlot$depth <- colz$depth
 
+# See percent of variance explained by the first 2 axes
 summary(pcaOut)
 
-pcaP <- ggplot(pcaPlot,aes(PC1,PC2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,21),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("PC1 (36.7%)")+ylab("PC2 (20.4%)")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Metabolic potential (mRNA)")+scale_fill_manual(breaks=c("25m","112m","150m","250m"),values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
+# Plot PCA
+pcaPlot <- ggplot(pcaPlot,aes(PC1,PC2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,21),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("PC1 (36.7%)")+ylab("PC2 (20.4%)")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Metabolic potential (mRNA)")+scale_fill_manual(breaks=c("25m","112m","150m","250m"),values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
 
-# 
+# Combine plots with a common legend and add panel labels (a-b)
 nmdsPlot+ pcaP + plot_layout(guides = "collect",nrow=2)+plot_annotation(tag_levels="a")
 # ggsave("Figure3.pdf",width=6,height=8)
