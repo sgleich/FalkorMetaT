@@ -2,6 +2,8 @@
 **By: Samantha Gleich**  
 **Most of the code here is taken from or modified from Dr. Sarah K. Hu (https://github.com/shu251/SPOT_metatranscriptome)**  
 **Last modified: 7/23/23**
+\
+![](static/Contour.pdf)\
 
 ## Trim Sequences - Trimmomatic
 Trim sequences using trimmomatic version 0.38
