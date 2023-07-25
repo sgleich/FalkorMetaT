@@ -8,21 +8,38 @@ library(tidyverse)
 library(reshape2)
 library(patchwork)
 
-# Load data
-df <- read.csv("KOSums_AllEuk_May2023.csv",header=TRUE,row.names=1)
-df <- subset(df,!is.na(KO))
-df <- subset(df,KO !="")
-colnames(df)[1] <- "KEGG.KO"
+# Load in normalized dataframe (obtained via Normalize_Data.R)
+df <- read.csv("normalized_metaT_data.csv",header=TRUE,row.names=1)
+
+# Remove columns we don't need
+df$contigID <- NULL
+df$Taxonomy <- NULL
+df$Cluster <- NULL 
+
+# Remove rows without KO term
+df <- subset(df,KO!="")
+
+# Sum counts per KO terms for each sample
+dfSum <- df %>% group_by(KO) %>% summarize_all(sum) %>% as.data.frame()
+####
+
+# Melt dataframe to make it long format
+dfMelt <- melt(dfSum,id.vars="KO")
+
+# Create new columns with eddy type and depth
+cols <- colsplit(dfMelt$variable,"\\.",c("X","Eddy","Depth","Rep"))
+dfMelt$Eddy <- cols$Eddy
+dfMelt$Depth <- cols$Depth
 
 # Gene groups - This is a list of KO terms that were defined as "phototrophy-associated" and "heterotrophy-associated" in this study
 ko <- read.csv("KEGG.csv",header=TRUE)
 
 # Join transcript abundance data and KO term list
-df <- left_join(df,ko)
+dfMelt <- left_join(dfMelt,ko)
 
 # Depth plot function
 # Input: Dataframe containing transcript abundances and KO term list info, target gene group (column in KO list dataframe), and title of plot
-# Output: Plot of mean z-score transformed gene group abundance +/- SE across all eddy type/depth combinations
+# Output: Plot of mean Z-score transformed gene group abundance +/- SE across all eddy type/depth combinations
 depthPlot <- function(df,target,title){
   df <- subset(df,Biomarker.Gene.Group==paste(target))
   df$KEGG.KO <- NULL
