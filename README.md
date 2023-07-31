@@ -1,6 +1,6 @@
 **Falkor MetaT Bioinformatic Pipeline**  
 **By: Samantha Gleich**  
-**Most of the code here is taken from or modified from Dr. Sarah K. Hu (https://github.com/shu251/SPOT_metatranscriptome)**  
+**Most of the code here is modified from Dr. Sarah K. Hu (https://github.com/shu251/SPOT_metatranscriptome)**  
 **Last modified: 7/23/23**
 \
 ![](static/Contour.png)
