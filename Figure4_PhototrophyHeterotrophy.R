@@ -68,4 +68,4 @@ ant <- depthPlot(dfSum,"Antenna proteins","Antenna proteins")
 
 # Combine all plots together with a common legend and add panel labels (a-l)
 photo+calvin+n+ant+phago+vtype+fat+cath+rho+endo+lyso+auto+plot_layout(guides = "collect",nrow=3)+plot_annotation(tag_levels="a") 
-# ggsave("../../Figure4.pdf",width=15,height=8)
+# ggsave("Figure4.pdf",width=15,height=8)
