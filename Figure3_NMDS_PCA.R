@@ -1,6 +1,6 @@
 ### Figure 3 - NMDS/PCA ###
 ### This script will allow you to make an NMDS plot using rRNA reads pull out of metatranscriptomes and a PCA plot using transcripts from metatranscriptomes. ###
-### Last Updated: July 23, 2023 ###
+### Last Updated: August 1, 2023 ###
 
 # Load libraries 
 library(ggplot)
@@ -71,33 +71,15 @@ df <- subset(df,KO!="")
 # Sum counts per KO terms for each sample
 dfSum <- df %>% group_by(KO) %>% summarize_all(sum) %>% as.data.frame()
 
-# Melt dataframe to make it long format
-dfMelt <- melt(dfSum,id.vars="KO")
-
-# Create new columns with eddy type and depth
-cols <- colsplit(dfMelt$variable,"\\.",c("X","Eddy","Depth","Rep"))
-dfMelt$Eddy <- cols$Eddy
-dfMelt$Depth <- cols$Depth
-
-# Calculate average abundances across reps for each eddy/depth
-dfAvg <- dfMelt %>% group_by(KO,Eddy,Depth) %>% summarize(m=mean(value)) %>% as.data.frame()
-
-# Create sample column
-dfAvg$Sample <- paste(dfAvg$Eddy,dfAvg$Depth,sep="_")
-
-# Remove columns that are not needed
-dfAvg$Eddy <- NULL
-dfAvg$Depth <- NULL
-
 # Run PCA
-rownames(dfAvg) <- dfAvg$KO
-dfAvg$KO <- NULL
-dfAvg <- as.data.frame(t(dfAvg))
-pcaOut <- prcomp(dfAvg,scale=TRUE)
+rownames(dfSum) <- dfSum$KO
+dfSum$KO <- NULL
+dfSum <- as.data.frame(t(dfSum))
+pcaOut <- prcomp(dfSum,scale=TRUE)
 
 # Extract results of PCA
 pcaPlot <- data.frame(pcaOut$x)
-colz <- colsplit(rownames(pcaPlot),"_",c("eddy","depth"))
+colz <- colsplit(rownames(pcaPlot),"\\.",c("x","eddy","depth","rep"))
 pcaPlot$eddy <- colz$eddy
 pcaPlot$depth <- colz$depth
 
@@ -105,8 +87,8 @@ pcaPlot$depth <- colz$depth
 summary(pcaOut)
 
 # Plot PCA
-pcaPlot <- ggplot(pcaPlot,aes(PC1,PC2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,21),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("PC1 (36.7%)")+ylab("PC2 (20.4%)")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Metabolic potential (mRNA)")+scale_fill_manual(breaks=c("25m","112m","150m","250m"),values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
+pcaPlot <- ggplot(pcaPlot,aes(PC1,PC2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,21),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("PC1 (29.7%)")+ylab("PC2 (16.6%)")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Metabolic potential (mRNA)")+scale_fill_manual(breaks=c("25m","112m","150m","250m"),values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
 
 # Combine plots with a common legend and add panel labels (a-b)
-nmdsPlot+ pcaP + plot_layout(guides = "collect",nrow=2)+plot_annotation(tag_levels="a")
+nmdsPlot+ pcaPlot + plot_layout(guides = "collect",nrow=2)+plot_annotation(tag_levels="a")
 # ggsave("Figure3.pdf",width=6,height=8)
