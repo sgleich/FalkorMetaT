@@ -1,6 +1,6 @@
 ### This script will allow you to normalize transcript abundance data across samples using the edgeR TMM CPM method. ###
 ### By: Samantha Gleich ###
-### Last Updated: July 23, 2023 ###
+### Last Updated: August 1, 2023 ###
 
 # Load libraries
 library(edgeR)
@@ -8,6 +8,9 @@ library(edgeR)
 # Load in wide format data (compiled but not yet normalized; obtained via Compile_Data.R)
 df <- read.csv("wide_format_data.csv",header=TRUE,row.names=1)
 df$Cluster <- as.character(df$Cluster)
+df$KO <- as.character(df$KO)
+
+df$KO <- ifelse(is.na(df$KO),"",df$KO)
 
 # Set up edgeR list. Counts are salmon sample counts, genes are identifiers (i.e. contigID, KO, Cluster, and Taxonomy), groups are you telling edgeR which groups exist in your dataset (i.e. sample types)
 dge.metaT <- DGEList(counts=df[5:28],genes=df[1:4],group=c(rep("Cyclonic-DCM",3),rep("Cyclonic-25m",3),rep("Anticyclonic-250m",3),rep("Anticyclonic-150m",3),rep("Anticyclonic-DCM",3),rep("Anticyclonic-25m",3),rep("Cyclonic-250m",3),rep("Cyclonic-150m",3)))
