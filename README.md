@@ -1,7 +1,7 @@
 **Falkor MetaT Bioinformatic Pipeline**  
 **By: Samantha Gleich**  
 **Most of the code here is modified from Dr. Sarah K. Hu (https://github.com/shu251/SPOT_metatranscriptome)**  
-**Last modified: 7/23/23**
+**Last modified: 8/4/23**
 \
 ![](static/Contour.png)
 
@@ -93,12 +93,12 @@ GeneMarkS-T/gmst.pl --fnn -faa [assemblyID1_final.contigs2.fa]
 ```
 GeneMarkS outputs can be used to for functional annotation via GhostKoala for KEGG annotation (https://www.kegg.jp/ghostkoala/) and/or eggNOG-mapper 
 
-## Taxonomic classification - EUKulele (version 1.4.0)
+## Taxonomic classification - EUKulele (version 2.0.3)
 We will now assign taxonomy to the contigs we obtained from each of our assemblies. In the example below, the directory "directory" has the .fnn file obtained from GeneMarkS.
 ```
 EUKulele --sample_dir /path/to/directory -m mets --n_ext fnn
 ```
-## Functional annotation - eggNOG (version 5.0)
+## Functional annotation - eggNOG (version 2.0.1b)
 We will take the predicted protein .faa files obtained from GeneMarkS to run eggNOG mapper for functional annotation. 
 ```
 emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output assemblyID1_eggnog -m diamond
