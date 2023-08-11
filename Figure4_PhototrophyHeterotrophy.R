@@ -44,12 +44,12 @@ depthPlot <- function(df,target,title){
   dfZ$eddy <- colz$eddy
   dfZ$depth <- colz$depth
   
-  dfFin <- dfZ %>% group_by(eddy,depth) %>% summarize(meanZ=mean(z),sdZ=(sd(z)/sqrt(3)))
+  dfFin <- dfZ %>% group_by(eddy,depth) %>% summarize(meanZ=mean(z),seZ=(sd(z)/sqrt(3)))
   dfFin$depth2 <- c(122,150,250,25,112,150,250,25)
   
   dodge <- position_dodge(10)
   
-  plot<- ggplot(dfFin, aes(x=depth2,y=meanZ,group=eddy,color=eddy))+geom_point(position=dodge,size=3.2)+scale_x_continuous(trans="reverse")+scale_y_continuous(position="right",limits=c(-3.5,3.5))+geom_errorbar(aes(ymin=meanZ-sdZ, ymax=meanZ+sdZ), width=0.4,position=dodge,linewidth=0.8)+coord_flip()+theme_classic()+scale_color_manual(name="Eddy",values=c("red","blue"))+xlab("Depth (m)")+ylab("Mean Z-score CPM +/- SE")+ggtitle(paste(title))+geom_hline(yintercept = 0,linetype="dotted")
+  plot<- ggplot(dfFin, aes(x=depth2,y=meanZ,group=eddy,color=eddy))+geom_point(position=dodge,size=3.2)+scale_x_continuous(trans="reverse")+scale_y_continuous(position="right",limits=c(-3.5,3.5))+geom_errorbar(aes(ymin=meanZ-seZ, ymax=meanZ+seZ), width=0.4,position=dodge,linewidth=0.8)+coord_flip()+theme_classic()+scale_color_manual(name="Eddy",values=c("red","blue"))+xlab("Depth (m)")+ylab("Mean Z-score CPM +/- SE")+ggtitle(paste(title))+geom_hline(yintercept = 0,linetype="dotted")
   return(plot)}
 
 # Implement function for the 12 gene groups focused on in this study
