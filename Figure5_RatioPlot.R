@@ -63,7 +63,7 @@ makeRatioPlot <- function(df,title){
   dfFull <- left_join(dfPhotoMelt,dfHeteroMelt)
   dfFull$Ratio <- dfFull$sPhoto/dfFull$sHetero
   
-  dfFin <- dfFull%>%group_by(Eddy,Depth)%>%summarize(meanz=mean(Ratio),sdz=(sd(Ratio)/sqrt(3)))
+  dfFin <- dfFull%>%group_by(Eddy,Depth)%>%summarize(meanz=mean(Ratio),sez=(sd(Ratio)/sqrt(3)))
   
   dfFin$Depth <- ifelse(dfFin$Depth=="112m","DCM", dfFin$Depth)
   dfFin$Depth <- ifelse(dfFin$Depth=="25m","25 m", dfFin$Depth)
@@ -71,7 +71,7 @@ makeRatioPlot <- function(df,title){
   dfFin$Depth <- ifelse(dfFin$Depth=="250m","250 m", dfFin$Depth)
   dfFin$Depth <- factor(dfFin$Depth,levels=c("250 m","150 m","DCM","25 m"))
   
-  p <- ggplot(dfFin, aes(x=Depth,y=meanz,fill=Eddy,group=Eddy))+geom_bar(stat='identity', position='dodge',color="black")+scale_y_continuous(breaks = scales::pretty_breaks(n = 3),position='right')+geom_errorbar(aes(ymin=meanz-sdz, ymax=meanz+sdz), width=0.4,position=position_dodge(.9))+coord_flip()+theme_classic(base_size = 14)+xlab("Depth (m)")+ggtitle(paste(title))+scale_fill_manual(values=c("red","blue"))+ylab("Phototrophy:Heterotrophy Transcript Ratio +/- SE")
+  p <- ggplot(dfFin, aes(x=Depth,y=meanz,fill=Eddy,group=Eddy))+geom_bar(stat='identity', position='dodge',color="black")+scale_y_continuous(breaks = scales::pretty_breaks(n = 3),position='right')+geom_errorbar(aes(ymin=meanz-sez, ymax=meanz+sez), width=0.4,position=position_dodge(.9))+coord_flip()+theme_classic(base_size = 14)+xlab("Depth (m)")+ggtitle(paste(title))+scale_fill_manual(values=c("red","blue"))+ylab("Phototrophy:Heterotrophy Transcript Ratio +/- SE")
   return(p)}
 
 # Run makeRatioPlot function for all different taxa
