@@ -1,7 +1,7 @@
 **Falkor MetaT Bioinformatic Pipeline**  
 **By: Samantha Gleich**  
 **Most of the code here is modified from Dr. Sarah K. Hu (https://github.com/shu251/SPOT_metatranscriptome)**  
-**Last modified: 8/4/23**
+**Last modified: 10/26/2023**
 \
 ![](static/Contour.png)
 
@@ -77,21 +77,38 @@ Add assembly tag to the beginning of each contig name. This will be important fo
 sed 's/^>/>assembly_ID1_/' [final.contigs.fa] > [assembly_ID1_final.contigs2.fa]
 cat [assembly_ID1_final.contigs2.fa] [assembly_ID2_final.contigs2.fa] [assembly_ID3_final.contigs2.fa] > [all_contigs.fa]
 ```
-## Estimate transcript abundances - salmon (version 1.5.1)
-Make index using concatenated assembly output (all_contigs.fa). Make sure contig names have sample info added to them (as done with the sed command above)
+## Cluster contigs - mmseqs2
+We will cluster the contigs to avoid redundancy. First we will create a database using mmseqs2.
 ```
-salmon index -t [all_contigs.fa] -i salmon_index
+mmseqs createdb all_contigs.fa DB
+```
+Then, we will cluster the contigs at a 97% similarity threshold
+```
+mmseqs linclust DB DB_clu tmp --min-seq-id 0.97 -c 0.95 --cov-mode 1
+```
+Then, we will make a database of representative contigs
+```
+mmseqs createsubdb DB_clu DB DB_clu_rep
+```
+Finally, we will extract the representative fasta sequences
+```
+mmseqs convert2fasta DB_clu_rep rep_contigs.fasta
+```
+## Estimate transcript abundances - salmon (version 1.5.1)
+Make index using representative contigs (rep_contigs.fasta). 
+```
+salmon index -t [rep_contigs.fasta] -i salmon_index
 ```
 Now execute salmon. You will have one salmon output file per sample. 
 ```
-salmon quant -i all_depths_eddies_index -l A -1 /path/to/directory/[sample-R1-unmerged.fastq] -2 /path/to/directory/[sample-R2-unmerged.fastq] -o [sample.quant]
+salmon quant -i salmon_index -l A -1 /path/to/directory/[sample-R1-unmerged.fastq] -2 /path/to/directory/[sample-R2-unmerged.fastq] -o [sample.quant]
 ```
 ## Predict proteins - GeneMarkS
 Now we can predict proteins from the contigs we've obtained from each of our assemblies. 
 ```
-GeneMarkS-T/gmst.pl --fnn -faa [assemblyID1_final.contigs2.fa]
+GeneMarkS-T/gmst.pl --fnn -faa [rep_contigs.fasta]
 ```
-GeneMarkS outputs can be used to for functional annotation via GhostKoala for KEGG annotation (https://www.kegg.jp/ghostkoala/) and/or eggNOG-mapper 
+GeneMarkS outputs can be used to for functional annotation via eggNOG-mapper 
 
 ## Taxonomic classification - EUKulele (version 2.0.3)
 We will now assign taxonomy to the contigs we obtained from each of our assemblies. In the example below, the directory "directory" has the .fnn file obtained from GeneMarkS.
@@ -101,11 +118,7 @@ EUKulele --sample_dir /path/to/directory -m mets --n_ext fnn
 ## Functional annotation - eggNOG (version 2.0.1b)
 We will take the predicted protein .faa files obtained from GeneMarkS to run eggNOG mapper for functional annotation. 
 ```
-emapper.py -i /path/to/genemark/output/[assemblyID1_final.contigs2.faa] --output assemblyID1_eggnog -m diamond
+emapper.py -i /path/to/genemark/output/[rep_contigs.faa] --output rep_contigs_eggnog -m diamond
 ```
-## Cluster proteins - mmseqs2
-We will cluster the predicted proteins. First we will create a database using mmseqs2.
-```
-mmseqs easy-cluster all_seqs.fnn clusterRes tmp --min-seq-id 0.8 -c 0.95 --cov-mode 1 
-```
-To compile eggNOG, EUKulele, salmon, and mmseqs2 output data into long and wide format dataframes, see Compile_Data.R. The compiled dataframe can be used to normalize the dataframe using Normalize_Data.R.
+## Compile
+To compile eggNOG, EUKulele, and salmon output data into long and wide format dataframes, see Compile_Data.R. The compiled dataframe can be used to normalize the dataframe using Normalize_Data.R.
