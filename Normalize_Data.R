@@ -7,6 +7,7 @@ library(edgeR)
 
 # Load in wide format data (compiled but not yet normalized; obtained via Compile_Data.R)
 df <- read.csv("wide_format_data.csv",header=TRUE,row.names=1)
+df <- subset(df,grepl("Eukaryota",df$Taxonomy))
 df$Cluster <- as.character(df$Cluster)
 df$KO <- as.character(df$KO)
 
