@@ -1,6 +1,6 @@
 ### Figure 5 - Phototrophy:Heterotrophy ratio plots ###
 ### This script will allow you to calculate and plot phototrophy:heterotrophy ratios from a list of phototrophy-associated and heterotrophy-associated KO terms that are pre-defined ###
-### Last Updated: July 25, 2023 ###
+### Last Updated: November 10, 2023 ###
 
 # Load libraries
 library(tidyverse)
@@ -13,22 +13,21 @@ library(patchwork)
 all <- read.csv("normalized_metaT_data.csv",header=TRUE,row.names=1)
 
 # Remove columns we don't need
-all$contigID <- NULL
+all$Name <- NULL
 all$Taxonomy <- NULL
-all$Cluster <- NULL 
 
 # Remove rows without KO term
-all <- subset(all,KO!="")
+all <- subset(all,KEGG!="")
 
 # Sum counts per KO terms for each sample
-dfSum <- all %>% group_by(KO) %>% summarize_all(sum) %>% as.data.frame()
+dfSum <- all %>% group_by(KEGG) %>% summarize_all(sum) %>% as.data.frame()
 
 # Ratio plot function
 # Input: dataframe and plot title
 # Output: Plot showing phototrophy:heterotrophy transcript ratios +/- SE across depths and eddy types
 makeRatioPlot <- function(df,title){
-  df <- subset(df,!is.na(KO))
-  df <- subset(df,KO !="")
+  df <- subset(df,!is.na(KEGG))
+  df <- subset(df,KEGG !="")
   
   # Gene groups
   `%ni%` <- Negate(`%in%`)
