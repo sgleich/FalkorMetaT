@@ -1,6 +1,6 @@
 ### Figure 2 - Taxa barplot ###
 ### This script will allow you to make barplots that show the relative abundances of transcripts associated with different taxonomic groups ###
-### Last Updated: July 24, 2023 ###
+### Last Updated: November 10, 2023 ###
 
 # Load libraries 
 library(ggplot2)
@@ -30,10 +30,9 @@ df$tax <- ifelse(df$Taxonomy=="Eukaryota","Unknown Eukaryote",df$tax)
 df$tax <- ifelse(is.na(df$tax),"Other Eukaryote",df$tax)
 
 # Remove columns we do not need for taxonomy summary
-df$contigID <- NULL
+df$Name <- NULL
 df$Taxonomy <- NULL
-df$Cluster <- NULL
-df$KO <- NULL
+df$KEGG <- NULL
 
 # Sum the number of transcripts per taxonomic group per sample
 dfSum <- df %>% group_by(tax) %>% summarize_all(sum) %>% as.data.frame()
@@ -42,7 +41,7 @@ dfSum <- df %>% group_by(tax) %>% summarize_all(sum) %>% as.data.frame()
 dfMelt <- melt(dfSum,id.vars="tax")
 
 # Create new columns with eddy type and depth
-cols <- colsplit(dfMelt$variable,"\\.",c("X","Eddy","Depth","Rep"))
+cols <- colsplit(dfMelt$variable,"\\.",c("Rep","Eddy","Depth"))
 dfMelt$Eddy <- cols$Eddy
 dfMelt$Depth <- cols$Depth
 
