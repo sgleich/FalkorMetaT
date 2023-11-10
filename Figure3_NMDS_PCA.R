@@ -54,32 +54,31 @@ nmdsDf$eddy <- cols$eddy
 nmdsDf$depth <- as.factor(cols$depth)
 
 # Plot NMDS
-nmdsPlot <- ggplot(nmdsDf,aes(MDS1,MDS2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,21),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("NMDS1")+ylab("NMDS2")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Community composition (18S rRNA)")+scale_fill_manual(values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
+nmdsPlot <- ggplot(nmdsDf,aes(MDS1,MDS2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,24),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("NMDS1")+ylab("NMDS2")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Community composition (18S rRNA)")+scale_fill_manual(values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
 
 ### PCA PLOT ###
 # Load in normalized dataframe (obtained via Normalize_Data.R)
 df <- read.csv("normalized_metaT_data.csv",header=TRUE,row.names=1)
 
 # Remove columns we don't need
-df$contigID <- NULL
-df$Taxonomy <- NULL
-df$Cluster <- NULL 
+df$Name <- NULL
+df$Taxonomy <- NULL 
 
 # Remove rows without KO term
-df <- subset(df,KO!="")
+df <- subset(df,KEGG!="")
 
 # Sum counts per KO terms for each sample
-dfSum <- df %>% group_by(KO) %>% summarize_all(sum) %>% as.data.frame()
+dfSum <- df %>% group_by(KEGG) %>% summarize_all(sum) %>% as.data.frame()
 
 # Run PCA
-rownames(dfSum) <- dfSum$KO
-dfSum$KO <- NULL
+rownames(dfSum) <- dfSum$KEGG
+dfSum$KEGG <- NULL
 dfSum <- as.data.frame(t(dfSum))
 pcaOut <- prcomp(dfSum,scale=TRUE)
 
 # Extract results of PCA
 pcaPlot <- data.frame(pcaOut$x)
-colz <- colsplit(rownames(pcaPlot),"\\.",c("x","eddy","depth","rep"))
+colz <- colsplit(rownames(pcaPlot),"\\.",c("eddy","depth","rep"))
 pcaPlot$eddy <- colz$eddy
 pcaPlot$depth <- colz$depth
 
@@ -87,7 +86,7 @@ pcaPlot$depth <- colz$depth
 summary(pcaOut)
 
 # Plot PCA
-pcaPlot <- ggplot(pcaPlot,aes(PC1,PC2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,21),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("PC1 (29.7%)")+ylab("PC2 (16.6%)")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Metabolic potential (mRNA)")+scale_fill_manual(breaks=c("25m","112m","150m","250m"),values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
+pcaPlot <- ggplot(pcaPlot,aes(PC1,PC2,shape=eddy))+geom_point(size=3,aes(fill=depth))+scale_shape_manual(values=c(22,24),name="Eddy",labels=c("Anticyclonic","Cyclonic"))+guides(fill = guide_legend(override.aes=list(shape=21)))+theme_classic()+xlab("PC1 (29.7%)")+ylab("PC2 (16.6%)")+geom_vline(xintercept = 0,linetype="dotted")+geom_hline(yintercept = 0,linetype="dotted")+ggtitle("Metabolic potential (mRNA)")+scale_fill_manual(breaks=c("25m","112m","150m","250m"),values=c("darkolivegreen3","dodgerblue3","indianred","darkgoldenrod1"),name="Depth",labels=c("25 m","DCM","150 m","250 m"))
 
 # Combine plots with a common legend and add panel labels (a-b)
 nmdsPlot+ pcaPlot + plot_layout(guides = "collect",nrow=2)+plot_annotation(tag_levels="a")
