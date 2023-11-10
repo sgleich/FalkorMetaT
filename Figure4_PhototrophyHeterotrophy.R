@@ -1,6 +1,6 @@
 ### Figure 4 - Phototrophy/Heterotrophy plots ###
 ### This script will allow you to summarize and plot the average +/- SE of various phototrophy/heterotrophy biomarker gene groups given a set of normalized transcript abundances ###
-### Last Updated: July 25, 2023 ###
+### Last Updated: November 10, 2023 ###
 
 # Load libraries 
 library(ggplot2)
@@ -12,15 +12,14 @@ library(patchwork)
 df <- read.csv("normalized_metaT_data.csv",header=TRUE,row.names=1)
 
 # Remove columns we don't need
-df$contigID <- NULL
-df$Taxonomy <- NULL
-df$Cluster <- NULL 
+df$Name <- NULL
+df$Taxonomy <- NULL 
 
 # Remove rows without KO term
-df <- subset(df,KO!="")
+df <- subset(df,KEGG!="")
 
 # Sum counts per KO terms for each sample
-dfSum <- df %>% group_by(KO) %>% summarize_all(sum) %>% as.data.frame()
+dfSum <- df %>% group_by(KEGG) %>% summarize_all(sum) %>% as.data.frame()
 
 # Gene groups - This is a list of KO terms that were defined as "phototrophy-associated" and "heterotrophy-associated" in this study
 ko <- read.csv("KEGG.csv",header=TRUE)
