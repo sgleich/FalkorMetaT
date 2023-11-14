@@ -1,7 +1,7 @@
 **Falkor MetaT Bioinformatic Pipeline**  
 **By: Samantha Gleich**  
 **Most of the code here is modified from Dr. Sarah K. Hu (https://github.com/shu251/SPOT_metatranscriptome)**  
-**Last modified: 10/26/2023**
+**Last modified: 11/14/2023**
 \
 ![](static/Contour.png)
 
@@ -103,20 +103,20 @@ Now execute salmon. You will have one salmon output file per sample.
 ```
 salmon quant -i salmon_index -l A -1 /path/to/directory/[sample-R1-unmerged.fastq] -2 /path/to/directory/[sample-R2-unmerged.fastq] -o [sample.quant]
 ```
-## Predict proteins - GeneMarkS
+## Predict proteins - GeneMarkS-T
 Now we can predict proteins from the contigs we've obtained from each of our assemblies. 
 ```
 GeneMarkS-T/gmst.pl --fnn -faa [rep_contigs.fasta]
 ```
-GeneMarkS outputs can be used to for functional annotation via eggNOG-mapper 
+GeneMarkS-T outputs can be used to for functional annotation via eggNOG-mapper 
 
 ## Taxonomic classification - EUKulele (version 2.0.3)
-We will now assign taxonomy to the contigs we obtained from each of our assemblies. In the example below, the directory "directory" has the .fnn file obtained from GeneMarkS.
+We will now assign taxonomy to the contigs we obtained from each of our assemblies. In the example below, the directory "directory" has the .fnn file obtained from GeneMarkS-T.
 ```
 EUKulele --sample_dir /path/to/directory -m mets --n_ext fnn
 ```
 ## Functional annotation - eggNOG (version 2.0.1b)
-We will take the predicted protein .faa files obtained from GeneMarkS to run eggNOG mapper for functional annotation. 
+We will take the predicted protein .faa files obtained from GeneMarkS-T to run eggNOG mapper for functional annotation. 
 ```
 emapper.py -i /path/to/genemark/output/[rep_contigs.faa] --output rep_contigs_eggnog -m diamond
 ```
